@@ -2,7 +2,7 @@ const Sketch = new p5((p5) => {
     const CANVAS_X = 1000,
         CANVAS_Y = 600;
 
-    const MAX_NUM = 70;
+    const MAX_NUM = 50;
     const boids = [];
 
     prepareBoids = () => {
@@ -23,7 +23,7 @@ const Sketch = new p5((p5) => {
     }
 
     p5.draw = () => {
-        p5.background(68);
+        p5.background(100);
         for (let boid of boids) {
             boid.edgeLoop();
             boid.flockRule(boids);
