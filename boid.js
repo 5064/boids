@@ -4,7 +4,8 @@ class Boid {
     acceleration;
 
     PERSEPTION_RADIUS = 100;
-    MAX_SPEED = 3
+    MAX_SPEED = 4;
+    MAX_FORCE = 0.1;
     constructor(p5, pos, vel) {
         this.p5 = p5;
         this.position = this.p5.createVector(pos.x, pos.y);
@@ -26,7 +27,8 @@ class Boid {
             average.div(totalBoids);  // now got average around Boids's velocity
         }
         average.setMag(this.MAX_SPEED)  // average is just direction, so unify magnitude
-        average.sub(this.velocity);  // average - current velocity = smooth steering
+        average.sub(this.velocity);  // desired - current velocity = steering
+        average.limit(this.MAX_FORCE);
         return average
     }
 
@@ -35,7 +37,7 @@ class Boid {
         let average = this.p5.createVector();
         for (let boid of boids) {
             const d = this.p5.dist(this.position.x, this.position.y, boid.position.x, boid.position.y);
-            if (d < this.PERSEPTION_RADIUS) {
+            if (d !== 0 && d < this.PERSEPTION_RADIUS) {
                 average.add(boid.position);
                 totalBoids++;
             }
@@ -43,14 +45,17 @@ class Boid {
         if (totalBoids !== 0) {
             average.div(totalBoids);  // now got average around Boids's position
         }
-        average.setMag(this.MAX_SPEED)  // average is just direction, so unify magnitude
+        average.sub(this.position);
+        average.setMag(this.MAX_SPEED);
         average.sub(this.velocity);  // average - current position
+        average.limit(this.MAX_FORCE);
         return average
     }
 
     flockRule = (boids) => {
         this.accelaration.mult(0)
-        this.accelaration.add(this.align(boids), this.cohesion(boids))
+        this.accelaration.add(this.align(boids))
+        this.accelaration.add(this.cohesion(boids))
     }
 
     update = () => {

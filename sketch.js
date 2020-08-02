@@ -25,9 +25,9 @@ const Sketch = new p5((p5) => {
     p5.draw = () => {
         p5.background(68);
         for (let boid of boids) {
+            boid.edgeLoop();
             boid.flockRule(boids);
             boid.update();
-            boid.edgeLoop();
             boid.show();
         }
     }
